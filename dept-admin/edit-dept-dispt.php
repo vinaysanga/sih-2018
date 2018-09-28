@@ -1,0 +1,29 @@
+<?php
+    session_start();
+    require_once '../db.php';
+    
+    if(filter_has_var(INPUT_POST, 'submit')){
+        
+        $name= filter_input(INPUT_POST,'name');
+        $dept= filter_input(INPUT_POST,'dept');        
+        $pass= filter_input(INPUT_POST,'password');
+        
+        $password = md5($pass);
+        
+        $query="UPDATE dispatcher SET password='$password',department='$dept',name='$name' WHERE department='$_SESSION[dept]'";
+        
+        if($conx->query($query)){            
+                $_SESSION['success'] = true;
+                header('Location: view-dispt.php');
+                exit();
+            
+        }
+        else{
+            $_SESSION['loginError'] = $conx->error;
+            header('Location: index.php');
+            exit();
+        }        
+    }else {
+            header("Location: index.php");
+            exit();
+    }
